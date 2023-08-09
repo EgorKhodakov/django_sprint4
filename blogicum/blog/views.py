@@ -23,7 +23,7 @@ class PostListView(ListView):
             pub_date__lte=datetime.today(),
             is_published=True,
             category__is_published=True
-            )
+        )
 
 
 class PostDetailView(DetailView):
@@ -57,20 +57,20 @@ class PostCategoryView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category'] = get_object_or_404(
-                                            Category,
-                                            slug=self.kwargs['category_slug'],
-                                            is_published=True
-                                            )
+            Category,
+            slug=self.kwargs['category_slug'],
+            is_published=True
+        )
         return context
 
     def get_queryset(self):
         current_time = datetime.now()
         return Post.objects.filter(
-                                   category__slug=self.kwargs['category_slug'],
-                                   category__is_published=True,
-                                   pub_date__lte=current_time,
-                                   is_published=True
-                                   )
+            category__slug=self.kwargs['category_slug'],
+            category__is_published=True,
+            pub_date__lte=current_time,
+            is_published=True
+        )
 
 
 class PostCreateVIew(LoginRequiredMixin, CreateView):
@@ -136,8 +136,8 @@ class ProfileListView(ListView):
 
     def get_queryset(self):
         return self.model.objects.select_related('author').filter(
-                                    author__username=self.kwargs['username']
-                                    )
+            author__username=self.kwargs['username']
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
