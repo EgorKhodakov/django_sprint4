@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Category, Location, Post
+from .models import Category, Location, Post, Comment
 
 admin.site.empty_value_display = 'Не задано'
 
@@ -48,6 +48,13 @@ class LocationAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
 
 
+class CommentAdmin(admin.ModelAdmin):
+    list_display = all
+    list_editable = ('text', 'author', 'post')
+    search_fields = ('author')
+
+
 admin.site.register(Post, PostAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(Comment, CommentAdmin)

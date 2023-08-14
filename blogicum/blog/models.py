@@ -61,11 +61,13 @@ class Post(PublishedCreated):
         )
     )
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name='Автор публикации'
-    )
+        User, on_delete=models.CASCADE, verbose_name='Автор публикации',
+        related_name='post'
+        )
     location = models.ForeignKey(
         Location, on_delete=models.SET_NULL,
-        null=True, verbose_name='Местоположение'
+        null=True, verbose_name='Местоположение',
+        related_name='posts_location'
     )
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL,
@@ -82,24 +84,27 @@ class Post(PublishedCreated):
 
     def __str__(self):
         return (
-            f'{(str(self.author))[:30]} -{self.title[:30]}'
+            f'{(self.author.get_username)[:30]} -{self.title[:30]}'
             f'{self.text[:50]} - {self.pub_date}'
             f'{self.location[:30] - {self.category[:30]}}'
         )
 
 
 class Comment(models.Model):
-    text = models.TextField('Текст Коментария')
+    text = models.TextField('Текст')
     created_at = models.DateTimeField(
         auto_now_add=True, verbose_name='Добавлено'
     )
-    author = models.ForeignKey(User, on_delete=models.CASCADE,
-                               verbose_name='Автор публикации',
-                               )
-    post = models.ForeignKey(Post, on_delete=models.CASCADE,
-                             verbose_name='Публикация',
-                             related_name='comments'
-                             )
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        verbose_name='Автор публикации',
+        related_name='authors_comments'
+        )
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE,
+        verbose_name='Публикация',
+        related_name='comments'
+        )
 
     class Meta:
         verbose_name = 'коментарий'
