@@ -41,7 +41,7 @@ class PostDetailView(DetailView):
             **super().get_context_data(**kwargs),
             comments=self.object.comments.select_related('author'),
             form=CommentForm()
-            )
+        )
 
 
 class PostCategoryView(PostMixin, ListView):
@@ -76,7 +76,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse(
             'blog:profile', args=[self.request.user]
-            )
+        )
 
 
 class PostMixin(LoginRequiredMixin):
@@ -165,7 +165,7 @@ class CommentUpdateView(CommentMixin, UpdateView):
         return dict(
             super().get_context_data(**kwargs),
             form=CommentForm(instance=self.object)
-            )
+        )
 
 
 class CommentDeleteView(CommentMixin, DeleteView):
