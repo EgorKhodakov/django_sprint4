@@ -49,9 +49,10 @@ class LocationAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = all
-    list_editable = ('text', 'author', 'post')
-    search_fields = ('author')
+    list_display = ('text', 'author', 'post',)
+    list_editable = ('author', 'post', )
+    search_fields = ('author',)
+    list_display_links = ('text',)
 
 
 admin.site.register(Post, PostAdmin)

@@ -62,12 +62,12 @@ class Post(PublishedCreated):
     )
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name='Автор публикации',
-        related_name='post'
+        related_name='posts'
     )
     location = models.ForeignKey(
         Location, on_delete=models.SET_NULL,
         null=True, verbose_name='Местоположение',
-        related_name='posts_location'
+        related_name='posts'
     )
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL,
@@ -83,10 +83,11 @@ class Post(PublishedCreated):
         ordering = ('-pub_date',)
 
     def __str__(self):
+        # return str(self.id)
         return (
-            f'{(self.author.get_username)[:30]} -{self.title[:30]}'
-            f'{self.text[:50]} - {self.pub_date}'
-            f'{self.location[:30] - {self.category[:30]}}'
+            f'{(self.author.get_username())[:30]} - {self.title[:30]} '
+            f'{self.text[:50]} - {self.pub_date} '
+            f'{self.location.name[:30]} - {self.category.title[:30]}'
         )
 
 
@@ -98,7 +99,7 @@ class Comment(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE,
         verbose_name='Автор публикации',
-        related_name='authors_comments'
+        related_name='comments'
     )
     post = models.ForeignKey(
         Post, on_delete=models.CASCADE,
