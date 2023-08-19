@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -9,7 +8,6 @@ from django.views.generic import (
     DetailView, CreateView, ListView, UpdateView, DeleteView
 )
 from django.db.models import Count
-from django.utils import timezone
 
 
 from blog.models import Category, Comment, Post, User
@@ -38,7 +36,7 @@ class PostListView(ListView):
 
     def get_queryset(self):
         return filtered_post(Post.objects.all())
-    
+
 
 class PostDetailView(DetailView):
     model = Post
