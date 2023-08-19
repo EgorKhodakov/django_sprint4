@@ -48,7 +48,7 @@ class PostDetailView(DetailView):
             **super().get_context_data(**kwargs),
             form=CommentForm(),
             comments=self.object.comments.select_related('author')
-            )
+        )
 
     def get_object(self, queryset=None):
         post = get_object_or_404(Post, pk=self.kwargs["post_id"])
