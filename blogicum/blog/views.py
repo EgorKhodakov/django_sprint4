@@ -52,9 +52,11 @@ class PostDetailView(DetailView):
     def get_object(self):
         posts = Post.objects
         return get_object_or_404(
-            posts.filter(is_published=True) or posts.filter(
-             author=self.request.user
-        )
+            posts.filter(
+                is_published=True
+            ) or posts.filter(
+                author=self.request.user
+            )
             if self.request.user and self.request.user.is_authenticated
             else filtered_post(Post.objects, is_count_comments=False),
             pk=self.kwargs["post_id"],
