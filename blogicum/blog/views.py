@@ -1,15 +1,14 @@
 from datetime import datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import (
     DetailView, CreateView, ListView, UpdateView, DeleteView
 )
-from django.db.models import Count, Q
 
-
-from blog.models import Category, Comment, Post, User
+from .models import Category, Comment, Post, User
 from .forms import CommentForm, PostForm, UserForm
 
 PAGINATOR_POST = 10
@@ -17,17 +16,17 @@ PAGINATOR_CATEGORY = 10
 PAGINATOR_PROFILE = 10
 
 
-def filtered_post(posts, user=None):
-    if user is not None and user.is_authenticated:
-        return posts.filter(
-            Q(is_published=True) | Q(author=user)
-        )
-    else:
-        return posts.filter(
-            pub_date__lte=datetime.today(),
-            is_published=True,
-            category__is_published=True
-        ).annotate(comment_count=Count('comments')).order_by('-pub_date')
+def filtered_post(posts, is_count_comments=True):
+    posts_query = posts.filter(
+        pub_date__lte=datetime.today(),
+        is_published=True,
+        category__is_published=True
+    ).order_by(
+        '-pub_date'
+    )
+    return posts_query.annotate(
+        comment_count=Count('comments')
+    ) if is_count_comments else posts_query
 
 
 class PostListView(ListView):
@@ -50,12 +49,16 @@ class PostDetailView(DetailView):
             comments=self.object.comments.select_related('author')
         )
 
-    def get_object(self, queryset=None):
-        post = get_object_or_404(
-            filtered_post(Post.objects, self.request.user),
-            pk=self.kwargs["post_id"]
+    def get_object(self):
+        posts = Post.objects
+        return get_object_or_404(
+            posts.filter(is_published=True) or posts.filter(
+             author=self.request.user
+            )
+            if self.request.user and self.request.user.is_authenticated
+            else filtered_post(Post.objects, is_count_comments=False),
+            pk=self.kwargs["post_id"],
         )
-        return post
 
 
 class PostCategoryView(ListView):
